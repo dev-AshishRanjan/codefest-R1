@@ -1,21 +1,18 @@
-name: Multi-Labeler
+name: Label Top Issues
 
 on:
-  issues:
-    types: [opened]
+  schedule:
+  - cron:  '15 0-23 * * *'
 
 jobs:
-  label:
+  labelTopIssues:
+    name: Label Top Issues
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Label Issue
-        uses: actions/github-script@v6
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          script: |
-            const labels = ['status: to do', 'priority: high'];
-            const issueNumber = context.issue.number;
-            const octokit = secrets.GITHUB_TOKEN;
-            octokit.issues.addLabels({ owner: context.repo.owner, repo: context.repo.repo, issue_number: issueNumber, labels: labels});
+    - name: Label Issues
+      uses: tinkurlab/top-issues-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TOP_NUMBER_OF_ISSUES: 10
+        TOP_LABEL_NAME: "👍 Top 10 Issue!"
+        TOP_LABEL_COLOR: f442c2
