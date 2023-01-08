@@ -1,21 +1,13 @@
-name: Custom Directory-Based Labeler
-
+name: "Pull Request Labeler"
 on:
-  pull_request:
-    types: [opened]
+  pull_request_target:
+    types: [opened, synchronize, reopened, edited]
 
 jobs:
-  label:
+  pr-labeler:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Label Pull Request
-        uses: actions/labeler@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          # The list of file paths and labels to apply if a file in the specified path was changed
-          file_labels: |
-            src/                area: src
-            root/               area: root
-            package/                area: package
+    - name: Label the PR
+      uses: gerrymanoim/pr-prefix-labeler@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
