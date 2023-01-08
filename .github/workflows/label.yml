@@ -1,4 +1,4 @@
-name: Directory-Based Labeler
+name: Custom Directory-Based Labeler
 
 on:
   pull_request:
@@ -10,24 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Label Pull Request
-        uses: actions/github-script@v6
+        uses: actions/labeler@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          script: |
-            const octokit = new github.GitHub(GITHUB_TOKEN);
-            const pullRequestNumber = context.issue.number;
-            const files = (await octokit.pulls.listFiles({ owner: context.repo.owner, repo: context.repo.repo, pull_number: pullRequestNumber })).data;
-            let label = null;
-            if (files.some(file => file.filename.startsWith('src/'))) {
-              label = 'area: src';
-            };
-            else if (files.some(file => file.filename.startsWith('root/'))) {
-              label = 'area: root';
-            };
-            else if ( files.some(file => file.filename.startsWith('package/'))) {
-              label = 'area: package';
-            };
-            if (label) {
-              octokit.issues.addLabels({ owner: context.repo.owner, repo: context.repo.repo, issue_number: pullRequestNumber, labels: [label]});
-            };
+          # The list of file paths and labels to apply if a file in the specified path was changed
+          file_labels: |
+            src/                area: src
+            root/               area: root
+            package/                area: package
