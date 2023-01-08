@@ -17,5 +17,5 @@ jobs:
           script: |
             const labels = ['status: to do', 'priority: high'];
             const issueNumber = context.issue.number;
-            const octokit = new github.GitHub(GITHUB_TOKEN);
+            const octokit = secrets.GITHUB_TOKEN;
             octokit.issues.addLabels({ owner: context.repo.owner, repo: context.repo.repo, issue_number: issueNumber, labels: labels});
